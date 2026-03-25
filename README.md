@@ -1,4 +1,4 @@
-# Genomics Pipeline Intro
+Genomics Pipeline Intro
 
 An introduction to the CHPC - specifically, logging onto a cluster and running scripts on compute nodes using the slurm workload manager.
 
@@ -17,9 +17,11 @@ An introduction to the CHPC - specifically, logging onto a cluster and running s
 # <a name="objectives"></a>
 # Objectives 
 
-- Logon to a CHPC cluster
+- Logon to the supercomputer
 - Explore the login node
 - Submit a batch script
+- Access an interactive node
+- Run a program using a batch script
 
 ---
 
@@ -37,7 +39,7 @@ The BYU Supercomputer is owned and operated by the BYU Office of Research Comput
 
 # <a name="logging-on"></a>
 # Logging on
-```ssh``` stands for 'secure shell'. By using ssh, you establish a secure connection between you and a remote computer. To use ssh for logging into the CHPC, do the following:
+```ssh``` stands for 'secure shell'. By using ssh, you establish a secure connection between you and a remote computer. To use ssh for logging into the BYU supercomputer, do the following:
 
 ```
 ssh <your-netid>@ssh.rc.byu.edu
@@ -60,7 +62,7 @@ pwd
 
 ***IMPORTANT:*** You should only read/create/edit files within your home directory. You shouldn't have access to anything else, but just-in-case I felt I should mention this here.
 
-Within your home directory you can create your own environment with directories and script files. Create a directory within your home directory called 'LonePeakLearner'.
+Within your home directory you can create your own environment with directories and script files. Create a directory within your home directory called 'LizardLover'.
 
 ```
 mkdir -p ~/LizardLover
@@ -79,6 +81,13 @@ cd ~/LizardLover
 echo 'echo "hello world\n" >> output.txt' > practice_script.sh
 ```
 
+To verify that you now have a file called 'practice_script.sh', check to see if it is there and what its contents are:
+
+```
+ls practice_script.sh	# this will show you if the file exists
+cat practice_script.sh	# this will print the contents of the file to your terminal
+```
+
 You can then run this script as you would on your local computer, but you are doing it on the cluster!
 
 ```
@@ -87,7 +96,7 @@ bash practice_script.sh
 
 ***IMPORTANT:*** You should never run demanding commands from the login node, regardless of the directory you are in. The login node is for editing files, submitting jobs, and analyzing output. Very inexpensive computation is okay (e.g., installing software packages is usually okay), but be careful. If you notice a job is taking a long time to run, you should kill it (using ```cmd+c```). Any computation that requires lots of time/power should be conducted on the compute nodes- not the login nodes. The compute nodes are introduced below. 
 
-The Supercomputer is a cluster of nodes that include the user login node (where your home directory is located) and compute nodes for high performance computing. These can all be seen on the [Supercomputer Website]([https://chpc.utah.edu/documentation/gettingstarted.php](https://rc.byu.edu/documentation/resources)).
+The Supercomputer is a cluster of nodes that include the user login node (where your home directory is located) and compute nodes for high performance computing. These can all be seen on the [BYU Supercomputer Website]([https://rc.byu.edu/documentation/resources])
 
 
 # <a name="creating-a-batch-script"></a>
@@ -109,6 +118,7 @@ You should have a bash script here called 'practice_script.sh' that appends 'hel
 #!/bin/sh
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
+#SBATCH --mem=1G
 #SBATCH --time=1:00:00
 #SBATCH -o slurm-%j.out-%N
 #SBATCH -e slurm-%j.err-%N
@@ -117,15 +127,13 @@ cd ~/LizardLover
 bash practice_script.sh
 ```
 
-Every line that begins with ```#SBATCH``` is an option that will be interpreted by slurm. Any line that starts with ```#``` and is not imediately followed with ```SBATCH``` will simply be interpreted as a comment. To see the values you can include for ```partition```, use the ```myallocation``` command below.
-
-```
-myallocation
-```
+Every line that begins with ```#SBATCH``` is an option that will be interpreted by slurm. Any line that starts with ```#``` and is not imediately followed with ```SBATCH``` will simply be interpreted as a comment. 
 
 The ```--nodes``` (```-N```) option specifies the number of nodes you are requesting. You can think of a node as a single computer. When we refer to the supercomputer as "the cluster", we are referring to the "cluster" of nodes that are used. In other words, the collection of interconnected computers that can be accessed for computing tasks. For computationally intensive jobs, you may want to use multiple nodes. The login node is essentially a node with low memory dedicated to user interaction (e.g., writing scripts). The compute nodes have more memory and are dedicated to computation. A node is made up of multiple processors.
 
 The '''---time''' option specifies the maximum runtime for the script. If the job goes over this time limit, the script will be terminated. The hours are broken up into 'hours':'minutes':'seconds'.
+
+The '''---mem''' option specifies the memory you request for the script (here, 1GB).
 
 The ```-o``` option specifies the name of the standard output file (stdout). In this example, we use the job number (```%j```) and the first node (```%N```) as components of the filename (this is a good practice, but is not necessary). Anytime you use a command such as ```echo``` that typically prints something to your terminal screen, it will be appended to this file.
 
@@ -148,6 +156,19 @@ sbatch slurm_newbie.sh
 
 It may take some time to run if you aren't first in the queue
 Check back periodically for the output files
+
+You can also see all of the jobs that are currently running (and where your's is at):
+
+```
+squeue
+```
+
+To see the status of only your job (and not all of the others) you can run:
+
+```squeue --job <your_job_number>
+```
+
+Where <your_job_number> is the id number for your job (which was printed to output when you ran your batch script)
 
 
 # <a name="using-an-interactive-node"></a>
