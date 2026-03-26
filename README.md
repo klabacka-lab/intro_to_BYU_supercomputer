@@ -133,9 +133,9 @@ Every line that begins with ```#SBATCH``` is an option that will be interpreted 
 
 The ```--nodes``` (```-N```) option specifies the number of nodes you are requesting. You can think of a node as a single computer. When we refer to the supercomputer as "the cluster", we are referring to the "cluster" of nodes that are used. In other words, the collection of interconnected computers that can be accessed for computing tasks. For computationally intensive jobs, you may want to use multiple nodes. The login node is essentially a node with low memory dedicated to user interaction (e.g., writing scripts). The compute nodes have more memory and are dedicated to computation. A node is made up of multiple processors.
 
-The '''---time''' option specifies the maximum runtime for the script. If the job goes over this time limit, the script will be terminated. The hours are broken up into 'hours':'minutes':'seconds'.
+The ```---time``` option specifies the maximum runtime for the script. If the job goes over this time limit, the script will be terminated. The hours are broken up into 'hours':'minutes':'seconds'.
 
-The '''---mem''' option specifies the memory you request for the script (here, 1GB).
+The ```---mem``` option specifies the memory you request for the script (here, 1GB).
 
 The ```-o``` option specifies the name of the standard output file (stdout). In this example, we use the job number (```%j```) and the first node (```%N```) as components of the filename (this is a good practice, but is not necessary). Anytime you use a command such as ```echo``` that typically prints something to your terminal screen, it will be appended to this file.
 
@@ -190,7 +190,7 @@ This provides you with a computing space with a one-hour time limit where you ca
 # <a name="">copying-to-supercomputer</a>
 # Copying local files to the supercomputer
 
-To copy a file from your local machine to the supercomputer, you can use the secure copy command ```scp'''. Let's do this with the 'ApoA-II_aligned.fa' file that is within this repository:
+To copy a file from your local machine to the supercomputer, you can use the secure copy command ```scp```. Let's do this with the 'ApoA-II_aligned.fa' file that is within this repository:
 
 ```
 scp <path-to-file>/ApoA-II_aligned.fa <netid>@ssh.rc.byu.edu/<path_to_directory_where_you_want_file_copied>
@@ -201,12 +201,12 @@ For example, let's say I have the file in my 'Downloads' directory, but I want t
 ```
 # On BYU rc
 mkdir ~/tree_test
-'''
+```
 
 ```
 # On local machine
 scp ~/Downloads/ApoA-II_aligned.fa rklaback@ssh.rc.byu.edu:~/tree_test 
-'''
+```
 
 # <a name="">loading-modules-and-running-tools</a>
 # Loading modules and running tools
@@ -217,7 +217,7 @@ Rather than re-invent the wheel, much of what you do on the supercomputer is lik
 module avail
 ```
 
-This can sometimes take a minute, but it will print all of the available modules on the supercomputer to the screen. You can scroll through them using the arrow keys. To leave the viewer, type ```q'''. To load a module, you will type the following (in either your bash or batch script, or you can just do it on the command line if you are using an interactive node):
+This can sometimes take a minute, but it will print all of the available modules on the supercomputer to the screen. You can scroll through them using the arrow keys. To leave the viewer, type ```q```. To load a module, you will type the following (in either your bash or batch script, or you can just do it on the command line if you are using an interactive node):
 
 If the software package you want is not present, you have two options: (1) install it yourself, or (2) request an installation. The request option is nice, since the research computing office will handle all of the installation and maintenance, and then the tool will be available to everyone who uses the supercomputer. To make an installation request, visit this url: <https://rc.byu.edu/ticket/>. However, there is a note on the website that ``Software installation is a low priority item'', for this reason you may want to install things locally.
 
@@ -226,14 +226,14 @@ Most software packages will have installation instructions, and BYU rc-specific 
 ```
 cd ~
 mkdir myTools
-'''
+```
 
 In the case of IQ-Tree, the package can be installed simply by downloading and extracting the tar file located here: <https://iqtree.github.io/#download>. Since you plan to run this on the supercomputer, download the linux version (the universal one) on your local machine. Once you download it to your local machine, you can copy it to your login node on the BYU supercomputer:
 
 ```
 # this is on your local machine
 scp <path-to-file>/iqtree-3.1.0-Linux.tar.gz <netid>@ssh.rc.byu.edu:~/myTools/
-'''
+```
 
 You should then see the file within your 'myTools' directory on the BYU rc. Once you are there, you can unzip it
 
@@ -241,40 +241,40 @@ You should then see the file within your 'myTools' directory on the BYU rc. Once
 # this is back on the BYU rc
 cd ~/myTools
 tar -xzvf iqtree-3.1.0-Linux.tar.gz
-'''
+```
 
-By running ```ls''' you'll see that the directory has been unzipped. you can navigate to the 'bin' directory to see the ```iqtree''' tools available.
+By running ```ls``` you'll see that the directory has been unzipped. you can navigate to the 'bin' directory to see the ```iqtree``` tools available.
 
 ```
 cd iqtree-3.1.0-Linux/bin
 ls
-'''
+```
 
-We should add this to our path variable, that way we can call ```iqtree''' from any directory. Do this with the following command:
+We should add this to our path variable, that way we can call ```iqtree``` from any directory. Do this with the following command:
 
 ```
 echo 'export PATH="$PATH:~/myTools/iqtree-3.1.0-Linux/bin"' >> ~/.bashrc
-'''
+```
 
-This added the iqtree 'bin' directory to your path variable as stored in your '~/.bashrc' file (the file that is ran every time you open a new session of the login node). Now you can update your path in your current terminal by running this command (you won't have to ever do this again, just this time since you already have a session runing and haven't sourced your '.bashrc' file since adding ```iqtree''' to your path.
+This added the iqtree 'bin' directory to your path variable as stored in your '~/.bashrc' file (the file that is ran every time you open a new session of the login node). Now you can update your path in your current terminal by running this command (you won't have to ever do this again, just this time since you already have a session runing and haven't sourced your '.bashrc' file since adding ```iqtree``` to your path.
 
 ```
 source ~/.bashrc
-''' 
+``` 
 
-Now if you navigate to your home directory, you should have the ability to call ```iqtree''' without being in its 'bin' directory:
+Now if you navigate to your home directory, you should have the ability to call ```iqtree``` without being in its 'bin' directory:
 
 ```
 cd ~
 which iqtree3
-'''
+```
 
 To run iqtree, you may want to refer to the manual to select your project-specific criteria. We will run it with some base parameters on the ApoA-II_aligned.fa file that we copied earlier.
 
 ```
 cd ~/tree_test
 iqtree3 -s ApoA-II_aligned.fa -m TEST -b 100
-'''
+```
 
 Make sure that you are doing this on an interactive node! Alternatively (and preferably), you would have this within a batch script. To do this, you would add the follwing code to a script named something like 's.run_iqtree.sh':
 
@@ -289,10 +289,11 @@ Make sure that you are doing this on an interactive node! Alternatively (and pre
 
 cd ~/tree_test
 iqtree3 -s ApoA-II_aligned.fa -m TEST -b 100
-'''
+```
 
 > Note: To add this to a text file, you can use a text editor on the BYU rc such as nano or vim. This tutorial doesn't go into how to use those, so you'll need to figure that out elsewhere. Vim is definitely the better of the two, but nano is more accessible initially. I recommend trying out vim and dealing with the initial challenge! It will be worth it. Here is a starters guide: <https://youtu.be/wACD8WEnImo?t=456s>
 Now once you submit your batch script, you can close your computer and go buy a soda while it runs!
 
 ```
-sbatch 
+srun s.run_iqtree.sh
+```
