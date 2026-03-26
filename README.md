@@ -165,7 +165,8 @@ squeue
 
 To see the status of only your job (and not all of the others) you can run:
 
-```squeue --job <your_job_number>
+```
+squeue --job <your_job_number>
 ```
 
 Where <your_job_number> is the id number for your job (which was printed to output when you ran your batch script)
@@ -182,5 +183,29 @@ To open an interactive node, you will simply run an interactive job using the fo
 salloc --time=1:00:00 --ntasks 1 --nodes=1
 ```
 
-This provides you with a computing space with a one-hour time limit where you can run commands/scripts you would run on a compute node using a batch submission.
+This provides you with a computing space with a one-hour time limit where you can run commands/scripts you would run on a compute node using a batch submission. You can also modify the flags and details just as you would in a slurm script with the #SBATCH lines (see above). 
+
+# <a name="">copying-to-supercomputer</a>
+# Copying local files to the supercomputer
+
+To copy a file from your local machine to the supercomputer, you can use the secure copy command ```scp'''. Let's do this with the 'ApoA-II_aligned.fa' file that is within this repository:
+
+```
+scp <path-to-file>/ApoA-II_aligned.fa <netid>@ssh.rc.byu.edu/<path_to_directory_where_you_want_file_copied>
+```
+
+
+# <a name="">loading-modules-and-running-tools</a>
+# Loading modules and running tools
+
+Rather than re-invent the wheel, much of what you do on the supercomputer is likely based on publicly-available tools to process/analyze your data. Sometimes you will have to install your own tools, but it is worth checking if the supercomputer already has your tool available. For instance, let's say you wanted to estimate a phylogeny based on the multiple sequence alingment contained within this repository: 'Apo-II_aligned.fa', and you already copied it to the supercomputer (see instructions above). You would like to use the software package 'IQ-TREE' to perform your phylogenetic estimation. To see if this software is available on the supercomputer, run:
+
+```
+module avail
+```
+
+This can sometimes take a minute, but it will print all of the available modules on the supercomputer to the screen. You can scroll through them using the arrow keys. To leave the viewer, type ```q'''. To load a module, you will type the following (in either your bash or batch script, or you can just do it on the command line if you are using an interactive node):
+
+If the software package you want is not present, you have two options: (1) install it yourself, or (2) request an installation. The request option is nice, since the research computing office will handle all of the installation and maintenance, and then the tool will be available to everyone who uses the supercomputer. To make an installation request, visit this url: <https://rc.byu.edu/ticket/>.
+
 
