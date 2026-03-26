@@ -37,6 +37,8 @@ You will need to enable two-factor authentication to login to your account (on t
 # Introduction
 The BYU Supercomputer is owned and operated by the BYU Office of Research Computing. This guide will help you login to the supercomputer and learn some of the basic commands for running scripts.
 
+> Note: I sometimes refer to the supercomputer as 'the BYU Supercomputer' and othertimes simply as 'the BYU rc' (for research computer).
+
 # <a name="logging-on"></a>
 # Logging on
 ```ssh``` stands for 'secure shell'. By using ssh, you establish a secure connection between you and a remote computer. To use ssh for logging into the BYU supercomputer, do the following:
@@ -194,6 +196,17 @@ To copy a file from your local machine to the supercomputer, you can use the sec
 scp <path-to-file>/ApoA-II_aligned.fa <netid>@ssh.rc.byu.edu/<path_to_directory_where_you_want_file_copied>
 ```
 
+For example, let's say I have the file in my 'Downloads' directory, but I want to put it in a directory called 'tree_test' on the BYU rc. To do this, I would do the following:
+
+```
+# On BYU rc
+mkdir ~/tree_test
+'''
+
+```
+# On local machine
+scp ~/Downloads/ApoA-II_aligned.fa rklaback@ssh.rc.byu.edu:~/tree_test 
+'''
 
 # <a name="">loading-modules-and-running-tools</a>
 # Loading modules and running tools
@@ -206,6 +219,80 @@ module avail
 
 This can sometimes take a minute, but it will print all of the available modules on the supercomputer to the screen. You can scroll through them using the arrow keys. To leave the viewer, type ```q'''. To load a module, you will type the following (in either your bash or batch script, or you can just do it on the command line if you are using an interactive node):
 
-If the software package you want is not present, you have two options: (1) install it yourself, or (2) request an installation. The request option is nice, since the research computing office will handle all of the installation and maintenance, and then the tool will be available to everyone who uses the supercomputer. To make an installation request, visit this url: <https://rc.byu.edu/ticket/>.
+If the software package you want is not present, you have two options: (1) install it yourself, or (2) request an installation. The request option is nice, since the research computing office will handle all of the installation and maintenance, and then the tool will be available to everyone who uses the supercomputer. To make an installation request, visit this url: <https://rc.byu.edu/ticket/>. However, there is a note on the website that ``Software installation is a low priority item'', for this reason you may want to install things locally.
 
+Most software packages will have installation instructions, and BYU rc-specific installation tips can be found here: <https://rc.byu.edu/documentation/unix-tutorial/unix8.php>. I like having my software packages within a folder of my home directory called 'myTools'. You can make this on yours:
 
+```
+cd ~
+mkdir myTools
+'''
+
+In the case of IQ-Tree, the package can be installed simply by downloading and extracting the tar file located here: <https://iqtree.github.io/#download>. Since you plan to run this on the supercomputer, download the linux version (the universal one) on your local machine. Once you download it to your local machine, you can copy it to your login node on the BYU supercomputer:
+
+```
+# this is on your local machine
+scp <path-to-file>/iqtree-3.1.0-Linux.tar.gz <netid>@ssh.rc.byu.edu:~/myTools/
+'''
+
+You should then see the file within your 'myTools' directory on the BYU rc. Once you are there, you can unzip it
+
+```
+# this is back on the BYU rc
+cd ~/myTools
+tar -xzvf iqtree-3.1.0-Linux.tar.gz
+'''
+
+By running ```ls''' you'll see that the directory has been unzipped. you can navigate to the 'bin' directory to see the ```iqtree''' tools available.
+
+```
+cd iqtree-3.1.0-Linux/bin
+ls
+'''
+
+We should add this to our path variable, that way we can call ```iqtree''' from any directory. Do this with the following command:
+
+```
+echo 'export PATH="$PATH:~/myTools/iqtree-3.1.0-Linux/bin"' >> ~/.bashrc
+'''
+
+This added the iqtree 'bin' directory to your path variable as stored in your '~/.bashrc' file (the file that is ran every time you open a new session of the login node). Now you can update your path in your current terminal by running this command (you won't have to ever do this again, just this time since you already have a session runing and haven't sourced your '.bashrc' file since adding ```iqtree''' to your path.
+
+```
+source ~/.bashrc
+''' 
+
+Now if you navigate to your home directory, you should have the ability to call ```iqtree''' without being in its 'bin' directory:
+
+```
+cd ~
+which iqtree3
+'''
+
+To run iqtree, you may want to refer to the manual to select your project-specific criteria. We will run it with some base parameters on the ApoA-II_aligned.fa file that we copied earlier.
+
+```
+cd ~/tree_test
+iqtree3 -s ApoA-II_aligned.fa -m TEST -b 100
+'''
+
+Make sure that you are doing this on an interactive node! Alternatively (and preferably), you would have this within a batch script. To do this, you would add the follwing code to a script named something like 's.run_iqtree.sh':
+
+```
+#!/bin/sh
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem=1G
+#SBATCH --time=1:00:00
+#SBATCH -o slurm-%j.out-%N
+#SBATCH -e slurm-%j.err-%N
+
+cd ~/tree_test
+iqtree3 -s ApoA-II_aligned.fa -m TEST -b 100
+'''
+
+> Note: To add this to a text file, you can use a text editor on the BYU rc such as nano or vim. This tutorial doesn't go into how to use those, so you'll need to figure that out elsewhere. Vim is definitely the better of the two, but nano is more accessible initially. I recommend trying out vim and dealing with the initial challenge! It will be worth it. Here is a starters guide: <https://youtu.be/wACD8WEnImo?t=456s>
+Now once you submit your batch script, you can close your computer and go buy a soda while it runs!
+
+```
+sbatch 
