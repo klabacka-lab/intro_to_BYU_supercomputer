@@ -295,5 +295,5 @@ iqtree3 -s ApoA-II_aligned.fa -m TEST -b 100
 Now once you submit your batch script, you can close your computer and go buy a soda while it runs!
 
 ```
-srun s.run_iqtree.sh
+sbatch s.run_iqtree.sh
 ```
