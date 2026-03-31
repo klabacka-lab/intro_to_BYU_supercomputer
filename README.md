@@ -278,6 +278,8 @@ iqtree3 -s ApoA-II_aligned.fa -m TEST -b 100
 
 Make sure that you are doing this on an interactive node! Alternatively (and preferably), you would have this within a batch script. To do this, you would add the follwing code to a script named something like 's.run_iqtree.sh':
 
+> Note: If you have questions on the number of nodes, tasks, or the amount of memory you should use, the research computing team at BYU is great about providing support and answering questions. You can ask questions by submitting a ticket at this website: <https://rc.byu.edu/ticket/>
+
 ```
 #!/bin/sh
 #SBATCH --nodes=1
@@ -292,6 +294,8 @@ iqtree3 -s ApoA-II_aligned.fa -m TEST -b 100
 ```
 
 > Note: To add this to a text file, you can use a text editor on the BYU rc such as nano or vim. This tutorial doesn't go into how to use those, so you'll need to figure that out elsewhere. Vim is definitely the better of the two, but nano is more accessible initially. I recommend trying out vim and dealing with the initial challenge! It will be worth it. Here is a starters guide: <https://youtu.be/wACD8WEnImo?t=456s>
+
+
 Now once you submit your batch script, you can close your computer and go buy a soda while it runs!
 
 ```
